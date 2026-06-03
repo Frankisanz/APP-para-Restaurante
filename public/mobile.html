@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Comandero Táctil - POS Móvil</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body class="mobile-body">
+
+  <!-- Screen Blocker Overlay (Previene doble tap al enviar y maneja desconexión) -->
+  <div id="screenBlocker" class="screen-blocker">
+    <div class="spinner"></div>
+    <div id="screenBlockerText" class="screen-blocker-text">Conectando...</div>
+  </div>
+
+  <!-- Premium User Authentication Overlay (Login / Register) -->
+  <div id="authOverlay" class="auth-overlay active">
+    <div class="auth-card">
+      <div class="auth-logo">🍽️</div>
+      <h2 class="auth-title">POS Restaurante</h2>
+      <p class="auth-subtitle">Comandero Móvil</p>
+      
+      <div class="auth-tabs">
+        <button id="authTabLogin" class="auth-tab active" type="button">Iniciar Sesión</button>
+        <button id="authTabRegister" class="auth-tab" type="button">Registrarse</button>
+      </div>
+
+      <!-- Iniciar Sesión Form -->
+      <form id="authLoginForm" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="loginUser">Nombre de Usuario</label>
+          <input type="text" id="loginUser" class="form-control" placeholder="Ej: admin" required autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="loginPass">Contraseña</label>
+          <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; font-weight: bold; margin-top: 10px; padding: 12px;">Ingresar</button>
+      </form>
+
+      <!-- Registrarse Form -->
+      <form id="authRegisterForm" style="display: none; flex-direction: column; gap: 12px;">
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="registerName">Nombre Completo</label>
+          <input type="text" id="registerName" class="form-control" placeholder="Ej: Juan Pérez" required autocomplete="name">
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="registerUser">Nombre de Usuario</label>
+          <input type="text" id="registerUser" class="form-control" placeholder="Ej: juan.pos" required autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="registerPass">Contraseña</label>
+          <input type="password" id="registerPass" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <label class="form-label" for="registerPassConfirm">Confirmar Contraseña</label>
+          <input type="password" id="registerPassConfirm" class="form-control" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-success" style="width: 100%; font-weight: bold; margin-top: 10px; padding: 12px;">Registrar Cuenta</button>
+      </form>
+
+      <div id="authMessage" class="auth-message"></div>
+    </div>
+  </div>
+
+  <div class="mobile-app">
+    <!-- Header -->
+    <header class="mobile-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="backToTables" class="back-btn" style="display: none;">⬅️</span>
+        <h1 id="headerTitle">Comandero Móvil</h1>
+        <button id="homeMenuBtn" class="home-menu-btn">🏠 Menú</button>
+        <button id="logoutBtn" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.8rem; display: none;" title="Cerrar Sesión">🚪 Salir</button>
+      </div>
+      <div id="wsStatus" class="badge badge-occupied">Desconectado</div>
+    </header>
+
+    <!-- VIEW 1: Table Selector (Physical Zones) -->
+    <main id="viewTables" class="mobile-view active" style="transform: translateX(0);">
+      <div class="mobile-grid-container">
+        <h2 style="font-size: 1.1rem; margin-bottom: 6px; color: var(--text-muted);">Filtrar por Zona:</h2>
+        
+        <!-- Table Zones Grid selector -->
+        <div class="mobile-zone-tabs" id="mobileZoneTabs">
+          <div class="mobile-zone-tab active" data-zone="Barra">Barra</div>
+          <div class="mobile-zone-tab" data-zone="Bar">Bar</div>
+          <div class="mobile-zone-tab" data-zone="Salon">Salón</div>
+          <div class="mobile-zone-tab" data-zone="Terraza">Terraza</div>
+        </div>
+
+        <div id="mobileTablesGrid" class="mobile-tables-grid" style="margin-top: 8px;">
+          <!-- Dynamic tables injected here -->
+        </div>
+      </div>
+    </main>
+
+    <!-- VIEW 2: Order Management (Dashboard + Catalog) -->
+    <main id="viewOrder" class="mobile-view">
+      <!-- Split Layout: Menu / Cart Tray -->
+      <div class="order-workspace">
+        
+        <!-- Top Workspace: Swapped between Dashboard (Página Principal) and Catalog -->
+        <section class="products-container">
+          
+          <!-- 1. Dashboard (Página Principal) view -->
+          <div id="dashboardView" class="dashboard-view">
+            
+            <!-- Category shortcuts grid -->
+            <h3 class="dashboard-sections-title">Secciones de la Carta</h3>
+            <div class="dashboard-grid">
+              <div class="dashboard-cat-card" data-cat="bebida">
+                <span class="dashboard-cat-icon">🥤</span>
+                <span class="dashboard-cat-name">Bebidas</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="raciones">
+                <span class="dashboard-cat-icon">🍳</span>
+                <span class="dashboard-cat-name">Raciones</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="entrantes">
+                <span class="dashboard-cat-icon">🥗</span>
+                <span class="dashboard-cat-name">Entrantes</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="fuera_carta">
+                <span class="dashboard-cat-icon">🍽️</span>
+                <span class="dashboard-cat-name">Fuera Carta</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="vino_copeo">
+                <span class="dashboard-cat-icon">🍷</span>
+                <span class="dashboard-cat-name">Vino Copeo</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="vino_ribera">
+                <span class="dashboard-cat-icon">🍇</span>
+                <span class="dashboard-cat-name">Vino Ribera</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="vino_rioja">
+                <span class="dashboard-cat-icon">🍾</span>
+                <span class="dashboard-cat-name">Vino Rioja</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="postre">
+                <span class="dashboard-cat-icon">🍰</span>
+                <span class="dashboard-cat-name">Postres</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="cafe">
+                <span class="dashboard-cat-icon">☕</span>
+                <span class="dashboard-cat-name">Café</span>
+              </div>
+              <div class="dashboard-cat-card" data-cat="comida_llevar">
+                <span class="dashboard-cat-icon">🛍️</span>
+                <span class="dashboard-cat-name">Para Llevar</span>
+              </div>
+            </div>
+
+            <!-- "Lo Más Usado" Favorites -->
+            <div class="most-used-section">
+              <h3 class="most-used-title">Lo Más Usado</h3>
+              <div id="mostUsedGrid" class="most-used-grid">
+                <!-- Dynamically populated from database products having is_most_used = 1 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Catalog view (hidden by default) -->
+          <div id="catalogView" style="display: none; flex-direction: column; gap: 12px; height: 100%;">
+            <!-- Horizontally swipeable categories sub-nav -->
+            <nav id="categoriesTabs" class="categories-tabs" style="margin: -12px -12px 0 -12px;">
+              <!-- Dynamic category tabs injected here -->
+            </nav>
+
+            <!-- Search input filter -->
+            <input type="text" id="productSearch" class="form-control" placeholder="🔍 Buscar producto..." style="padding: 10px 14px; font-size: 0.9rem;">
+
+            <!-- Products Grid list -->
+            <div style="flex: 1; overflow-y: auto; margin-top: 4px;">
+              <div id="productsGrid" class="products-grid">
+                <!-- Dynamic products injected here -->
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Bottom Workspace: Current Cart Tray -->
+        <section class="cart-panel">
+          <div class="cart-header">
+            <span class="cart-title">Pedido Actual</span>
+            <span id="cartCountBadge" class="badge" style="background-color: var(--bg-app);">0 items</span>
+          </div>
+
+          <div class="cart-items-list">
+            
+            <!-- Existing orders on this table (read-only warning) -->
+            <div id="existingOrderSummary" class="existing-order-summary" style="display: none;">
+              <div class="existing-order-title">Consumiciones activas:</div>
+              <div id="existingItemsList" class="existing-items-mini-list">
+                <!-- Mini items inject here -->
+              </div>
+            </div>
+
+            <!-- Current new order items list -->
+            <div id="currentCartItems" style="display: flex; flex-direction: column; gap: 8px;">
+              <!-- Add new products here -->
+            </div>
+            
+            <!-- Empty state for cart -->
+            <div id="cartEmptyState" style="color: var(--text-muted); text-align: center; padding: 15px 0; font-size: 0.85rem;">
+              Selecciona productos de la carta para añadirlos a la comanda.
+            </div>
+
+          </div>
+
+          <!-- Notes and send order actions -->
+          <div class="cart-options">
+            <textarea id="orderNotes" class="form-control notes-input" placeholder="Notas especiales (Ej. Sin hielo, Salsa aparte...)"></textarea>
+          </div>
+
+          <div class="cart-footer-btn-container">
+            <button id="sendOrderBtn" class="btn btn-primary btn-send-order" disabled>ENVIAR A COCINA/BARRA</button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Page and WS Controller -->
+  <script src="js/mobile.js"></script>
+</body>
+</html>
