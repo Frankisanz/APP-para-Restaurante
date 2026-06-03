@@ -393,6 +393,138 @@ async function deleteOrderItem(itemId) {
   return { success: true, orderId };
 }
 
+async function updateOrderItemPrice(itemId, newPrice) {
+  let orderId;
+  if (useFallback) {
+    const itemIndex = fallbackData.order_items.findIndex(oi => oi.id === Number(itemId));
+    if (itemIndex !== -1) {
+      fallbackData.order_items[itemIndex].price_at_sale = Number(newPrice);
+      orderId = fallbackData.order_items[itemIndex].order_id;
+      saveFallback();
+    }
+  } else {
+    const item = await get(`SELECT order_id FROM order_items WHERE id = ?`, [itemId]);
+    if (item) {
+      orderId = item.order_id;
+      await run(`UPDATE order_items SET price_at_sale = ? WHERE id = ?`, [newPrice, itemId]);
+    }
+  }
+
+  if (orderId) {
+    await updateOrderTotal(orderId);
+  }
+  return { success: true, orderId };
+}
+
+async function updatePermanentProductPrice(productId, newPrice) {
+  let productName;
+  
+  if (useFallback) {
+    const idx = fallbackData.products.findIndex(p => p.id === Number(productId));
+    if (idx !== -1) {
+      fallbackData.products[idx].price = Number(newPrice);
+      productName = fallbackData.products[idx].name;
+      saveFallback();
+    }
+  } else {
+    const prod = await get(`SELECT name FROM products WHERE id = ?`, [productId]);
+    if (prod) {
+      productName = prod.name;
+      await run(`UPDATE products SET price = ? WHERE id = ?`, [newPrice, productId]);
+    }
+  }
+
+  if (productName) {
+    try {
+      if (fs.existsSync(CONFIG_FILE)) {
+        const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+        const configProd = config.products.find(p => p.name === productName);
+        if (configProd) {
+          configProd.price = Number(newPrice);
+          fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf8');
+          console.log(`Precio de '${productName}' actualizado en restaurant_config.json.`);
+        }
+      }
+    } catch (err) {
+      console.error('Error actualizando restaurant_config.json:', err);
+    }
+  }
+
+  return { success: true, productName };
+}
+
+async function addProductPermanent(name, price, category, destination, is_most_used) {
+  let newId;
+  const numPrice = Number(price);
+  const numMostUsed = Number(is_most_used || 0);
+
+  if (useFallback) {
+    const idx = fallbackData.products.findIndex(p => p.name === name);
+    if (idx !== -1) {
+      fallbackData.products[idx].price = numPrice;
+      fallbackData.products[idx].category = category;
+      fallbackData.products[idx].destination = destination;
+      fallbackData.products[idx].is_most_used = numMostUsed;
+      newId = fallbackData.products[idx].id;
+    } else {
+      newId = fallbackData.products.length > 0 ? Math.max(...fallbackData.products.map(p => p.id)) + 1 : 1;
+      fallbackData.products.push({
+        id: newId,
+        name,
+        price: numPrice,
+        category,
+        destination,
+        is_most_used: numMostUsed
+      });
+    }
+    saveFallback();
+  } else {
+    const existing = await get(`SELECT id FROM products WHERE name = ?`, [name]);
+    if (existing) {
+      newId = existing.id;
+      await run(
+        `UPDATE products SET price = ?, category = ?, destination = ?, is_most_used = ? WHERE id = ?`,
+        [numPrice, category, destination, numMostUsed, newId]
+      );
+    } else {
+      const result = await run(
+        `INSERT INTO products (name, price, category, destination, is_most_used) VALUES (?, ?, ?, ?, ?)`,
+        [name, numPrice, category, destination, numMostUsed]
+      );
+      newId = result.id;
+    }
+  }
+
+  // Update restaurant_config.json
+  try {
+    if (fs.existsSync(CONFIG_FILE)) {
+      const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+      if (!config.products) {
+        config.products = [];
+      }
+      const existingIdx = config.products.findIndex(p => p.name === name);
+      const newProdConfig = {
+        name,
+        price: numPrice,
+        category,
+        destination,
+        is_most_used: numMostUsed
+      };
+      if (existingIdx !== -1) {
+        config.products[existingIdx] = newProdConfig;
+      } else {
+        config.products.push(newProdConfig);
+      }
+      fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf8');
+      console.log(`Producto '${name}' guardado permanentemente en restaurant_config.json.`);
+    }
+  } catch (err) {
+    console.error('Error al guardar en restaurant_config.json:', err);
+  }
+
+  return { success: true, id: newId };
+}
+
 // API methods
 async function getTables() {
   if (useFallback) {
@@ -790,6 +922,9 @@ module.exports = {
   closeCashShift,
   updateOrderItemQty,
   deleteOrderItem,
+  updateOrderItemPrice,
+  updatePermanentProductPrice,
+  addProductPermanent,
   getRestaurantConfig,
   isFallback: () => useFallback
 };

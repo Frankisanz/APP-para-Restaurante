@@ -15,88 +15,555 @@
     "Terraza": 25
   },
   "categories": [
-    { "id": "bebida", "label": "Bebidas", "icon": "🥤" },
-    { "id": "entrantes", "label": "Entrantes", "icon": "🥗" },
-    { "id": "raciones", "label": "Raciones", "icon": "🍳" },
-    { "id": "carnes", "label": "Carnes", "icon": "🥩" },
-    { "id": "pescados", "label": "Pescados", "icon": "🐟" },
-    { "id": "arroces_pastas", "label": "Arroces y Pastas", "icon": "🥘" },
-    { "id": "otras_cosas", "label": "Otras Cosas", "icon": "🥪" },
-    { "id": "vino_copeo", "label": "Vino Copeo", "icon": "🍷" },
-    { "id": "vino_ribera", "label": "Vino Ribera", "icon": "🍇" },
-    { "id": "vino_rioja", "label": "Vino Rioja", "icon": "🍾" },
-    { "id": "postre", "label": "Postres", "icon": "🍰" },
-    { "id": "cafe", "label": "Café", "icon": "☕" },
-    { "id": "comida_llevar", "label": "Para Llevar", "icon": "🛍️" }
+    {
+      "id": "bebida",
+      "label": "Bebidas",
+      "icon": "🥤"
+    },
+    {
+      "id": "entrantes",
+      "label": "Entrantes",
+      "icon": "🥗"
+    },
+    {
+      "id": "raciones",
+      "label": "Raciones",
+      "icon": "🍳"
+    },
+    {
+      "id": "carnes",
+      "label": "Carnes",
+      "icon": "🥩"
+    },
+    {
+      "id": "pescados",
+      "label": "Pescados",
+      "icon": "🐟"
+    },
+    {
+      "id": "arroces_pastas",
+      "label": "Arroces y Pastas",
+      "icon": "🥘"
+    },
+    {
+      "id": "otras_cosas",
+      "label": "Otras Cosas",
+      "icon": "🥪"
+    },
+    {
+      "id": "vino_copeo",
+      "label": "Vino Copeo",
+      "icon": "🍷"
+    },
+    {
+      "id": "vino_ribera",
+      "label": "Vino Ribera",
+      "icon": "🍇"
+    },
+    {
+      "id": "vino_rioja",
+      "label": "Vino Rioja",
+      "icon": "🍾"
+    },
+    {
+      "id": "postre",
+      "label": "Postres",
+      "icon": "🍰"
+    },
+    {
+      "id": "cafe",
+      "label": "Café",
+      "icon": "☕"
+    },
+    {
+      "id": "comida_llevar",
+      "label": "Para Llevar",
+      "icon": "🛍️"
+    }
   ],
   "products": [
-    { "name": "Copa de cerveza", "price": 2.50, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Tercio 5 estrellas", "price": 3.00, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Quinto 5 estrellas", "price": 2.00, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Vino limón", "price": 2.50, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Vino blanca", "price": 2.80, "category": "vino_copeo", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Alhambra especial", "price": 3.20, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Coca cola", "price": 2.50, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Caña", "price": 1.80, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Caña sin alcohol", "price": 1.80, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Copa sin alcohol", "price": 2.20, "category": "bebida", "destination": "BARRA", "is_most_used": 1 },
-    { "name": "Copa Ribera del Duero Protos", "price": 3.50, "category": "vino_ribera", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Botella Ribera Pago de Carraovejas", "price": 38.00, "category": "vino_ribera", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Copa Rioja Crianza Ramón Bilbao", "price": 3.20, "category": "vino_rioja", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Botella Rioja Muga Especial", "price": 28.00, "category": "vino_rioja", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Café Espresso", "price": 1.50, "category": "cafe", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Café con Leche", "price": 1.80, "category": "cafe", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Té Verde Orgánico", "price": 2.00, "category": "cafe", "destination": "BARRA", "is_most_used": 0 },
-    { "name": "Jamón Ibérico", "price": 22.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Jamón Ibérico (Media)", "price": 14.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Queso Añejo", "price": 12.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Queso Añejo (Media)", "price": 8.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Gamba Blanca a la Plancha", "price": 26.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Ensalada de la Casa", "price": 8.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Tomate con Ventresca", "price": 12.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Lomo de Orza con Huevo", "price": 14.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Croquetas de la Casa", "price": 12.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Croquetas de la Casa (Media)", "price": 8.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Lata de Anchoa 0.0", "price": 15.00, "category": "entrantes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Pulpo a la gallega / A la Brasa", "price": 24.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Cachopo con Queso (Para 2 personas)", "price": 22.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Chipirones a la Plancha", "price": 20.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Mollejas de Cordero al Ajillo", "price": 18.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Puntillitas", "price": 18.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Puntillitas (Media)", "price": 10.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Carpaccio de Pulpo", "price": 18.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Wok de Verduras con Ibérico", "price": 16.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Habitas Baby con Huevo", "price": 16.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Boquerones", "price": 16.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Boquerones (Media)", "price": 10.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Tataki de Atún", "price": 14.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Flamenquin de Cerdo y Queso Azul", "price": 12.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Huevos rotos con Patatas y Jamón", "price": 12.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Berenjenas con Miel de Caña", "price": 12.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Berenjenas con Miel de Caña (Media)", "price": 8.00, "category": "raciones", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Solomillo de Cerdo Ibérico al Jerez", "price": 16.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Solomillo de Ternera con Foie", "price": 22.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Lagarto / Secreto Ibérico a la Brasa", "price": 20.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Entrecot de Vaca Madurada a la Brasa", "price": 20.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Chuleton Vaca Madurada 1'1 Kg. a la Brasa", "price": 42.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Cochinillo Asado en su Jugo", "price": 24.00, "category": "carnes", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Calamar Nacional a la Brasa", "price": 20.00, "category": "pescados", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Bacalao al Ajillo con Gambón", "price": 19.00, "category": "pescados", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Rodaballo a la Plancha", "price": 22.00, "category": "pescados", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Lubina a la Espalda", "price": 18.00, "category": "pescados", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Paella mixta (Por Encargo)", "price": 8.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Paella de pescados y marisco (Por Encargo)", "price": 10.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Fideuá de pescado y mariscos (Por Encargo)", "price": 10.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Arroz con Perdiz", "price": 16.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Arroz con Carabineros", "price": 22.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Arroz Negro con Chipirón", "price": 16.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Risotto de Boletus con Trufa", "price": 15.00, "category": "arroces_pastas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Sandwich de Jamón York y Queso", "price": 6.00, "category": "otras_cosas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Hamburguesa de Ternera Completa", "price": 9.00, "category": "otras_cosas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Pechuga Empanada", "price": 8.00, "category": "otras_cosas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Servicio de Pan", "price": 0.60, "category": "otras_cosas", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Tarta de la Casa", "price": 5.00, "category": "postre", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Helado", "price": 5.00, "category": "postre", "destination": "COCINA", "is_most_used": 0 },
-    { "name": "Fruta", "price": 5.00, "category": "postre", "destination": "COCINA", "is_most_used": 0 }
+    {
+      "name": "Copa de cerveza",
+      "price": 2.5,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Tercio 5 estrellas",
+      "price": 3,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Quinto 5 estrellas",
+      "price": 2,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Vino limón",
+      "price": 2.5,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Vino blanca",
+      "price": 2.8,
+      "category": "vino_copeo",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Alhambra especial",
+      "price": 3.2,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Coca cola",
+      "price": 2.5,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Caña",
+      "price": 1.8,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Caña sin alcohol",
+      "price": 1.8,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Copa sin alcohol",
+      "price": 2.2,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    },
+    {
+      "name": "Copa Ribera del Duero Protos",
+      "price": 3.5,
+      "category": "vino_ribera",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Botella Ribera Pago de Carraovejas",
+      "price": 38,
+      "category": "vino_ribera",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Copa Rioja Crianza Ramón Bilbao",
+      "price": 3.2,
+      "category": "vino_rioja",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Botella Rioja Muga Especial",
+      "price": 28,
+      "category": "vino_rioja",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Café Espresso",
+      "price": 1.5,
+      "category": "cafe",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Café con Leche",
+      "price": 1.8,
+      "category": "cafe",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Té Verde Orgánico",
+      "price": 2,
+      "category": "cafe",
+      "destination": "BARRA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Jamón Ibérico",
+      "price": 22,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Jamón Ibérico (Media)",
+      "price": 14,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Queso Añejo",
+      "price": 12,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Queso Añejo (Media)",
+      "price": 8,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Gamba Blanca a la Plancha",
+      "price": 26,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Ensalada de la Casa",
+      "price": 8,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Tomate con Ventresca",
+      "price": 12,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Lomo de Orza con Huevo",
+      "price": 14,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Croquetas de la Casa",
+      "price": 12,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Croquetas de la Casa (Media)",
+      "price": 8,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Lata de Anchoa 0.0",
+      "price": 15,
+      "category": "entrantes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Pulpo a la gallega / A la Brasa",
+      "price": 24,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Cachopo con Queso (Para 2 personas)",
+      "price": 22,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Chipirones a la Plancha",
+      "price": 20,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Mollejas de Cordero al Ajillo",
+      "price": 18,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Puntillitas",
+      "price": 18,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Puntillitas (Media)",
+      "price": 10,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Carpaccio de Pulpo",
+      "price": 18,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Wok de Verduras con Ibérico",
+      "price": 16,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Habitas Baby con Huevo",
+      "price": 16,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Boquerones",
+      "price": 16,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Boquerones (Media)",
+      "price": 10,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Tataki de Atún",
+      "price": 14,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Flamenquin de Cerdo y Queso Azul",
+      "price": 12,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Huevos rotos con Patatas y Jamón",
+      "price": 12,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Berenjenas con Miel de Caña",
+      "price": 12,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Berenjenas con Miel de Caña (Media)",
+      "price": 8,
+      "category": "raciones",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Solomillo de Cerdo Ibérico al Jerez",
+      "price": 16,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Solomillo de Ternera con Foie",
+      "price": 22,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Lagarto / Secreto Ibérico a la Brasa",
+      "price": 20,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Entrecot de Vaca Madurada a la Brasa",
+      "price": 20,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Chuleton Vaca Madurada 1'1 Kg. a la Brasa",
+      "price": 42,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Cochinillo Asado en su Jugo",
+      "price": 24,
+      "category": "carnes",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Calamar Nacional a la Brasa",
+      "price": 20,
+      "category": "pescados",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Bacalao al Ajillo con Gambón",
+      "price": 19,
+      "category": "pescados",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Rodaballo a la Plancha",
+      "price": 22,
+      "category": "pescados",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Lubina a la Espalda",
+      "price": 18,
+      "category": "pescados",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Paella mixta (Por Encargo)",
+      "price": 8,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Paella de pescados y marisco (Por Encargo)",
+      "price": 10,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Fideuá de pescado y mariscos (Por Encargo)",
+      "price": 10,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Arroz con Perdiz",
+      "price": 16,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Arroz con Carabineros",
+      "price": 22,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Arroz Negro con Chipirón",
+      "price": 16,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Risotto de Boletus con Trufa",
+      "price": 15,
+      "category": "arroces_pastas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Sandwich de Jamón York y Queso",
+      "price": 6,
+      "category": "otras_cosas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Hamburguesa de Ternera Completa",
+      "price": 9,
+      "category": "otras_cosas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Pechuga Empanada",
+      "price": 8,
+      "category": "otras_cosas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Servicio de Pan",
+      "price": 0.6,
+      "category": "otras_cosas",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Tarta de la Casa",
+      "price": 5,
+      "category": "postre",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Helado",
+      "price": 5,
+      "category": "postre",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Fruta",
+      "price": 5,
+      "category": "postre",
+      "destination": "COCINA",
+      "is_most_used": 0
+    },
+    {
+      "name": "Fanta Limon",
+      "price": 2.75,
+      "category": "bebida",
+      "destination": "BARRA",
+      "is_most_used": 1
+    }
   ]
 }

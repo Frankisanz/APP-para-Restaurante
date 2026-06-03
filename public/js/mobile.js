@@ -101,6 +101,12 @@ function connectWS() {
           }
           break;
 
+        case 'PRODUCTS_UPDATED':
+          products = message.data.products;
+          renderMostUsedProducts();
+          renderProducts();
+          break;
+
         case 'ERROR':
           alert(`Error del Servidor: ${message.message}`);
           break;

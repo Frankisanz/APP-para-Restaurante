@@ -315,6 +315,45 @@ wss.on('connection', async (ws) => {
           break;
         }
 
+        // Admin: Update item price
+        case 'UPDATE_ORDER_ITEM_PRICE': {
+          const { itemId, tableId, price } = message.data;
+          console.log(`Admin: Actualizando precio de item ID ${itemId} de Mesa ${tableId} a ${price} €`);
+
+          await db.updateOrderItemPrice(itemId, price);
+          
+          const updatedTables = await db.getTables();
+          broadcast({ type: 'STATE_UPDATE', data: { tables: updatedTables } });
+
+          const activeOrder = await db.getActiveOrderDetails(tableId);
+          broadcast({ type: 'ORDER_UPDATED', data: { tableId, activeOrder } });
+          break;
+        }
+
+        // Admin: Update product price permanently in catalog
+        case 'UPDATE_PRODUCT_PRICE_PERMANENT': {
+          const { productId, price } = message.data;
+          console.log(`Admin: Actualizando precio del producto ID ${productId} a ${price} € permanentemente`);
+
+          await db.updatePermanentProductPrice(productId, price);
+          
+          const updatedProducts = await db.getProducts();
+          broadcast({ type: 'PRODUCTS_UPDATED', data: { products: updatedProducts } });
+          break;
+        }
+
+        // Admin: Add new product permanently to catalog
+        case 'ADD_PRODUCT_PERMANENT': {
+          const { name, price, category, destination, is_most_used } = message.data;
+          console.log(`Admin: Añadiendo producto nuevo '${name}' de forma permanente`);
+
+          await db.addProductPermanent(name, price, category, destination, is_most_used);
+          
+          const updatedProducts = await db.getProducts();
+          broadcast({ type: 'PRODUCTS_UPDATED', data: { products: updatedProducts } });
+          break;
+        }
+
         case 'UPDATE_PRINTERS': {
           const { settings } = message.data;
           printer.updatePrinterSettings(settings);

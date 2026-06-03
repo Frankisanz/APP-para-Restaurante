@@ -268,6 +268,11 @@ function connectWS() {
           playCashChime();
           break;
 
+        case 'PRODUCTS_UPDATED':
+          products = message.data.products;
+          renderDesktopCatalog();
+          break;
+
         case 'ERROR':
           alert(`Error del Servidor: ${message.message}`);
           break;
@@ -358,8 +363,6 @@ function populateTablesGrid() {
       desktopCart = []; // Clear draft only on explicit table switch
       renderDesktopDraft();
       
-      adminUnlocked = false; // Lock changes by default when switching tables
-      syncAdminUnlockButtonState();
       updateActiveTableDetail();
     });
 
@@ -384,7 +387,6 @@ async function updateActiveTableDetail() {
       </div>
     `;
     closeTableBtn.style.display = 'none';
-    adminUnlockBtn.style.display = 'none';
     manualItemForm.style.display = 'none';
     if (mainContent) mainContent.classList.remove('table-active');
     if (desktopCatalogMenu) desktopCatalogMenu.style.display = 'none';
@@ -415,7 +417,6 @@ async function updateActiveTableDetail() {
       </div>
     `;
     closeTableBtn.style.display = 'none';
-    adminUnlockBtn.style.display = 'none';
     totalAmount.textContent = '0.00 €';
     manualItemForm.style.display = 'block';
   } else {
@@ -424,7 +425,6 @@ async function updateActiveTableDetail() {
       type: 'GET_TABLE_DETAILS',
       data: { tableId: selectedTableId }
     }));
-    adminUnlockBtn.style.display = 'block';
     manualItemForm.style.display = 'block';
   }
 }
@@ -449,8 +449,17 @@ function renderOrderItems(activeOrder) {
     
     const notesStr = item.notes ? `<span class="order-item-notes">${item.notes}</span>` : '';
     
+    let priceDisplay = `<div class="order-item-price">${(item.price * item.quantity).toFixed(2)} €</div>`;
     let adminControls = '';
     if (adminUnlocked) {
+      priceDisplay = `
+        <div class="order-item-price" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+          <span style="font-size: 0.68rem; color: var(--color-primary); cursor: pointer; border-bottom: 1px dashed var(--color-primary); padding-bottom: 1px; user-select: none;" onclick="editItemPrice(${item.id}, ${item.price})" title="Haga clic para cambiar el precio de este artículo en esta mesa">
+            U: ${item.price.toFixed(2)} € ✏️
+          </span>
+          <span style="font-weight: 700;">${(item.price * item.quantity).toFixed(2)} €</span>
+        </div>
+      `;
       adminControls = `
         <div class="admin-qty-controls" style="margin-left: 8px;">
           <button class="admin-btn" onclick="adjustItemQty(${item.id}, -1)">-</button>
@@ -468,7 +477,7 @@ function renderOrderItems(activeOrder) {
         ${notesStr}
       </div>
       <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-        <div class="order-item-price">${(item.price * item.quantity).toFixed(2)} €</div>
+        ${priceDisplay}
         ${adminControls}
       </div>
     `;
@@ -485,7 +494,6 @@ function renderOrderItems(activeOrder) {
 
   closeTableBtn.style.display = 'block';
   closeTableBtn.setAttribute('data-order-id', activeOrder.order.id);
-  adminUnlockBtn.style.display = 'block';
 }
 
 // Admin modifications handlers
@@ -540,14 +548,54 @@ window.deleteItem = function(itemId) {
   }
 };
 
+window.editItemPrice = function(itemId, currentPrice) {
+  if (!selectedTableId || !adminUnlocked) return;
+  const newPriceVal = prompt(`Introduce el nuevo precio para este artículo en la comanda (€):`, currentPrice.toFixed(2));
+  if (newPriceVal === null) return; // User cancelled
+  const price = parseFloat(newPriceVal);
+  if (isNaN(price) || price < 0) {
+    alert('Por favor, introduce un precio válido (número positivo).');
+    return;
+  }
+  socket.send(JSON.stringify({
+    type: 'UPDATE_ORDER_ITEM_PRICE',
+    data: {
+      itemId,
+      tableId: selectedTableId,
+      price: price
+    }
+  }));
+};
+
+window.editPermanentPrice = function(productId, productName, currentPrice) {
+  if (!adminUnlocked) return;
+  const newPriceVal = prompt(`Cambiar precio definitivo en la CARTA para:\n"${productName}"\n\nNuevo precio (€):`, currentPrice.toFixed(2));
+  if (newPriceVal === null) return; // User cancelled
+  const price = parseFloat(newPriceVal);
+  if (isNaN(price) || price < 0) {
+    alert('Por favor, introduce un precio válido (número positivo).');
+    return;
+  }
+  socket.send(JSON.stringify({
+    type: 'UPDATE_PRODUCT_PRICE_PERMANENT',
+    data: {
+      productId,
+      price: price
+    }
+  }));
+};
+
 // Sync unlock button label
 function syncAdminUnlockButtonState() {
+  const addNewProductBtn = document.getElementById('addNewProductBtn');
   if (adminUnlocked) {
     adminUnlockBtn.textContent = '🔒 Bloquear Cambios';
     adminUnlockBtn.className = 'admin-unlock-btn unlocked';
+    if (addNewProductBtn) addNewProductBtn.style.display = 'inline-block';
   } else {
     adminUnlockBtn.textContent = '🔓 Desbloquear Cambios';
     adminUnlockBtn.className = 'admin-unlock-btn';
+    if (addNewProductBtn) addNewProductBtn.style.display = 'none';
   }
 }
 
@@ -633,10 +681,24 @@ function renderDesktopCatalog() {
   sorted.forEach(prod => {
     const btn = document.createElement('button');
     btn.className = 'desktop-product-btn';
+    
+    let editBtnHtml = '';
+    if (adminUnlocked) {
+      editBtnHtml = `
+        <span class="catalog-edit-price-btn" onclick="event.stopPropagation(); editPermanentPrice(${prod.id}, '${prod.name.replace(/'/g, "\\'")}', ${prod.price})" style="cursor: pointer; padding: 2px 5px; background: var(--color-primary-light); border: 1px dashed var(--color-primary); border-radius: 4px; font-size: 0.65rem; color: var(--color-primary); font-weight: 700; display: inline-flex; align-items: center; gap: 2px; user-select: none;" title="Cambiar precio de este producto de forma definitiva en la carta">
+          ✏️ Carta
+        </span>
+      `;
+    }
+
     btn.innerHTML = `
       <span class="desktop-product-btn-name">${prod.name}</span>
-      <span class="desktop-product-btn-price">${prod.price.toFixed(2)} €</span>
+      <div style="display: flex; align-items: center; width: 100%; justify-content: space-between; margin-top: auto;">
+        <span class="desktop-product-btn-price">${prod.price.toFixed(2)} €</span>
+        ${editBtnHtml}
+      </div>
     `;
+
     btn.addEventListener('click', () => {
       if (!selectedTableId) {
         alert('Por favor selecciona una mesa primero.');
@@ -673,10 +735,12 @@ function checkAuthSession() {
   if (session) {
     authOverlay.classList.remove('active');
     logoutBtn.style.display = 'inline-block';
+    adminUnlockBtn.style.display = 'inline-flex';
     connectWS();
   } else {
     authOverlay.classList.add('active');
     logoutBtn.style.display = 'none';
+    adminUnlockBtn.style.display = 'none';
   }
 }
 
@@ -890,6 +954,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Toggle back to locked
       adminUnlocked = false;
       syncAdminUnlockButtonState();
+      renderDesktopCatalog();
       updateActiveTableDetail();
     } else {
       // Prompt PIN
@@ -912,7 +977,9 @@ document.addEventListener('DOMContentLoaded', () => {
       syncAdminUnlockButtonState();
       adminPinModal.classList.remove('active');
       
-      // Force redraw of items to show delete buttons
+      // Force redraw of catalog and items
+      renderDesktopCatalog();
+      
       const table = tables.find(t => t.id === selectedTableId);
       if (table) {
         socket.send(JSON.stringify({
@@ -938,6 +1005,76 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clearLogsBtn').addEventListener('click', () => {
     ticketScroller.innerHTML = `<div style="color: var(--text-muted); text-align: center; margin-top: 40px; font-size: 0.85rem;">Logs Limpiados. Esperando nuevas comandas...</div>`;
   });
+
+  // Open Add Product Modal
+  const addNewProductBtn = document.getElementById('addNewProductBtn');
+  const addProductModal = document.getElementById('addProductModal');
+  const cancelAddProductBtn = document.getElementById('cancelAddProductBtn');
+  const confirmAddProductBtn = document.getElementById('confirmAddProductBtn');
+  
+  if (addNewProductBtn) {
+    addNewProductBtn.addEventListener('click', () => {
+      // Populate category dropdown
+      const newProdCategory = document.getElementById('newProdCategory');
+      if (newProdCategory && restaurantConfig && restaurantConfig.categories) {
+        newProdCategory.innerHTML = '';
+        restaurantConfig.categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = `${cat.icon || ''} ${cat.label}`;
+          newProdCategory.appendChild(opt);
+        });
+      }
+      
+      // Reset inputs
+      document.getElementById('newProdName').value = '';
+      document.getElementById('newProdPrice').value = '';
+      document.getElementById('newProdMostUsed').checked = false;
+      document.getElementById('newProdDest').value = 'BARRA';
+      
+      addProductModal.classList.add('active');
+      document.getElementById('newProdName').focus();
+    });
+  }
+
+  if (cancelAddProductBtn) {
+    cancelAddProductBtn.addEventListener('click', () => {
+      addProductModal.classList.remove('active');
+    });
+  }
+
+  if (confirmAddProductBtn) {
+    confirmAddProductBtn.addEventListener('click', () => {
+      const name = document.getElementById('newProdName').value.trim();
+      const priceVal = document.getElementById('newProdPrice').value;
+      const category = document.getElementById('newProdCategory').value;
+      const destination = document.getElementById('newProdDest').value;
+      const is_most_used = document.getElementById('newProdMostUsed').checked ? 1 : 0;
+      
+      if (!name) {
+        alert('Por favor, introduce el nombre del producto.');
+        return;
+      }
+      const price = parseFloat(priceVal);
+      if (isNaN(price) || price < 0) {
+        alert('Por favor, introduce un precio válido (número positivo).');
+        return;
+      }
+
+      socket.send(JSON.stringify({
+        type: 'ADD_PRODUCT_PERMANENT',
+        data: {
+          name,
+          price,
+          category,
+          destination,
+          is_most_used
+        }
+      }));
+      
+      addProductModal.classList.remove('active');
+    });
+  }
 
   // Theme Toggle
   themeToggle.addEventListener('click', () => {
@@ -1084,6 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       authOverlay.classList.add('active');
       logoutBtn.style.display = 'none';
+      adminUnlockBtn.style.display = 'none';
       
       // Clear any table UI selection
       selectedTableId = null;
