@@ -9,6 +9,7 @@ body.mobile-body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   position: relative;
   overflow: hidden;
@@ -489,7 +490,7 @@ body.mobile-body {
 }
 
 .cart-footer-btn-container {
-  padding: 10px 12px 28px 12px;
+  padding: 10px 12px 42px 12px;
   background-color: var(--bg-sidebar);
 }
 
