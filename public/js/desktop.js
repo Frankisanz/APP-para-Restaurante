@@ -1,6 +1,7 @@
 let socket;
 let intentionalLogout = false;
 let selectedTableId = null;
+let desktopCart = [];
 let tables = [];
 let products = [];
 let printerSettings = {};
@@ -354,6 +355,9 @@ function populateTablesGrid() {
       card.classList.add('selected');
       
       selectedTableId = table.id;
+      desktopCart = []; // Clear draft only on explicit table switch
+      renderDesktopDraft();
+      
       adminUnlocked = false; // Lock changes by default when switching tables
       syncAdminUnlockButtonState();
       updateActiveTableDetail();
@@ -638,18 +642,18 @@ function renderDesktopCatalog() {
         alert('Por favor selecciona una mesa primero.');
         return;
       }
-      // Send socket command directly to add this product to the comanda
-      socket.send(JSON.stringify({
-        type: 'NEW_ORDER',
-        data: {
-          tableId: selectedTableId,
-          items: [{
-            productId: prod.id,
-            quantity: 1,
-            notes: ''
-          }]
-        }
-      }));
+      // Add to desktop draft cart instead of sending directly
+      const existing = desktopCart.find(item => item.type === 'catalog' && item.product.id === prod.id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        desktopCart.push({
+          type: 'catalog',
+          product: prod,
+          quantity: 1
+        });
+      }
+      renderDesktopDraft();
     });
     gridContainer.appendChild(btn);
   });
@@ -675,6 +679,65 @@ function checkAuthSession() {
     logoutBtn.style.display = 'none';
   }
 }
+
+// Desktop Draft Cart Functions
+function renderDesktopDraft() {
+  const draftSection = document.getElementById('desktopDraftSection');
+  const draftList = document.getElementById('desktopDraftList');
+  if (!draftSection || !draftList) return;
+
+  if (desktopCart.length === 0) {
+    draftSection.style.display = 'none';
+    return;
+  }
+
+  draftSection.style.display = 'block';
+  draftList.innerHTML = '';
+
+  desktopCart.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'order-item-row';
+    row.style.backgroundColor = 'var(--bg-app)';
+    row.style.borderStyle = 'dashed';
+
+    const name = item.type === 'catalog' ? item.product.name : item.name;
+    const dest = item.type === 'catalog' ? item.product.destination : item.destination;
+    const destBadge = dest === 'BARRA' ? '<span class="badge badge-free" style="font-size: 0.65rem;">Barra</span>' : '<span class="badge badge-occupied" style="font-size: 0.65rem;">Cocina</span>';
+
+    row.innerHTML = `
+      <div class="order-item-qty">${item.quantity}</div>
+      <div class="order-item-info">
+        <span class="order-item-name">${name}</span>
+        <div style="margin-top: 2px;">${destBadge}</div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+        <div class="admin-qty-controls">
+          <button class="admin-btn" onclick="adjustDesktopDraftQty(${index}, -1)">-</button>
+          <span style="font-size:0.75rem; font-weight:700; width:12px; text-align:center;">${item.quantity}</span>
+          <button class="admin-btn" onclick="adjustDesktopDraftQty(${index}, 1)">+</button>
+          <button class="admin-delete-btn" onclick="deleteDesktopDraftItem(${index})" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    `;
+    draftList.appendChild(row);
+  });
+}
+
+window.adjustDesktopDraftQty = function(index, delta) {
+  if (!desktopCart[index]) return;
+  desktopCart[index].quantity += delta;
+  if (desktopCart[index].quantity <= 0) {
+    desktopCart.splice(index, 1);
+  }
+  renderDesktopDraft();
+};
+
+window.deleteDesktopDraftItem = function(index) {
+  if (confirm('¿Deseas eliminar este artículo del pedido en preparación?')) {
+    desktopCart.splice(index, 1);
+    renderDesktopDraft();
+  }
+};
 
 // DOM Setup
 document.addEventListener('DOMContentLoaded', () => {
@@ -738,17 +801,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    socket.send(JSON.stringify({
-      type: 'ADD_MANUAL_ITEM',
-      data: {
-        tableId: selectedTableId,
-        name,
-        price,
-        quantity,
-        category: 'manual',
-        destination
-      }
-    }));
+    // Add to desktop draft cart instead of sending directly
+    desktopCart.push({
+      type: 'manual',
+      name,
+      price,
+      quantity,
+      destination
+    });
+    renderDesktopDraft();
 
     nameInput.value = '';
     priceInput.value = '';
@@ -970,6 +1031,47 @@ document.addEventListener('DOMContentLoaded', () => {
       registerPassConfirm.value = '';
       authMessage.textContent = '';
     }, 1000);
+  });
+
+  // Send Draft Order click handler
+  document.getElementById('desktopSendDraftBtn').addEventListener('click', () => {
+    if (!selectedTableId || desktopCart.length === 0) return;
+
+    // Send catalog items
+    const catalogItems = desktopCart.filter(item => item.type === 'catalog');
+    if (catalogItems.length > 0) {
+      socket.send(JSON.stringify({
+        type: 'NEW_ORDER',
+        data: {
+          tableId: selectedTableId,
+          items: catalogItems.map(item => ({
+            productId: item.product.id,
+            quantity: item.quantity,
+            notes: ''
+          }))
+        }
+      }));
+    }
+
+    // Send manual items
+    const manualItems = desktopCart.filter(item => item.type === 'manual');
+    manualItems.forEach(item => {
+      socket.send(JSON.stringify({
+        type: 'ADD_MANUAL_ITEM',
+        data: {
+          tableId: selectedTableId,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          category: 'manual',
+          destination: item.destination
+        }
+      }));
+    });
+
+    // Clear cart and re-render
+    desktopCart = [];
+    renderDesktopDraft();
   });
 
   // Logout click handler
