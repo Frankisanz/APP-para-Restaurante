@@ -29,7 +29,7 @@ function getRestaurantConfig() {
   return {
     restaurant: {
       name: "POS Restaurante",
-      adminPin: "1234"
+      adminPin: "1111"
     },
     tablesSetup: { Barra: 5, Bar: 6, Salon: 10 },
     products: []

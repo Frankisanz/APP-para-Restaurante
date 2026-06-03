@@ -905,7 +905,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   confirmPinBtn.addEventListener('click', () => {
     const enteredPin = adminPinInput.value.trim();
-    const configPin = (restaurantConfig && restaurantConfig.restaurant.adminPin) ? restaurantConfig.restaurant.adminPin : '1234';
+    const configPin = (restaurantConfig && restaurantConfig.restaurant.adminPin) ? restaurantConfig.restaurant.adminPin : '1111';
     
     if (enteredPin === configPin) {
       adminUnlocked = true;
