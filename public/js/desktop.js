@@ -933,6 +933,11 @@ document.addEventListener('DOMContentLoaded', () => {
       data: { orderId, paymentMethod: 'EFECTIVO' }
     }));
     paymentModal.classList.remove('active');
+
+    // Reset table selection to return to initial state
+    selectedTableId = null;
+    populateTablesGrid();
+    updateActiveTableDetail();
   });
 
   payCardBtn.addEventListener('click', () => {
@@ -942,6 +947,11 @@ document.addEventListener('DOMContentLoaded', () => {
       data: { orderId, paymentMethod: 'TARJETA' }
     }));
     paymentModal.classList.remove('active');
+
+    // Reset table selection to return to initial state
+    selectedTableId = null;
+    populateTablesGrid();
+    updateActiveTableDetail();
   });
 
   cancelPaymentBtn.addEventListener('click', () => {
@@ -1209,6 +1219,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear cart and re-render
     desktopCart = [];
     renderDesktopDraft();
+
+    // Reset table selection to return to initial state
+    selectedTableId = null;
+    populateTablesGrid();
+    updateActiveTableDetail();
   });
 
   // Logout click handler
